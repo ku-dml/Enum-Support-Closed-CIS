@@ -1,4 +1,4 @@
-#include "../clost/define.h"
+#include "../Boley's_etal/define.h"
 #include "p_value.hpp"
 #include "stat/stat.hpp"
 #include <vector>
