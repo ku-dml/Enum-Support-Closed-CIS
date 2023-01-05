@@ -213,7 +213,7 @@ void readPattern(Param P, Tool T, Graph G){
       G->V[x]->id = x;
       G->V[x]->deg = 0;
       G->V[x]->Itv_ptr = new IntvIDSeq[1];
-      G->V[x]->I = new itemset;
+      G->V[x]->I = new  itemset;
       G->V[x]->I->reset();
       if (strcmp(str_item, "") == Equiv || strcmp(str_item, "!") == Equiv) {
       G->V[x]->items = 0;
@@ -389,8 +389,6 @@ unsigned int prepareBFS(BFSTool B, int n, VertexIDSeq &seq){
   return marker;
 }
 
-//  update "S" with solution \cl_\sigma( S \cup \{V\} )
-//  return an information how getClosure finished (get no solution(0), get solution which has no child(2), or get general solution(1))
 int getClosure(Param P, Tool T, Graph G, BFSTool B, Solution *S, BanList *Ban, Vertex V, itemset Item, itemset* result) {
 	itemset I = Item & *(V->I);
     int numItems = I.count();

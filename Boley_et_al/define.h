@@ -66,7 +66,7 @@ struct _Vertex{
   int id;             // vertex id
   VertexIDSeq A;          // adjacency list;List of vertex ID
   int deg;            // degree of vertex
-  bitset<ITEM_SIZE> *I;          // bit string that represents item set
+  itemset *I;          // bit string that represents item set
   IntvIDSeq *Itv_ptr; // pointers to IDs of bit strings that contain at least one item
   int items;          // number of one's in I
 };
