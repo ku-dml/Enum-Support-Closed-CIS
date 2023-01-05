@@ -1,4 +1,4 @@
-#include "../clost/define.h"
+#include "../Boley_et_al/define.h"
 #include "p_value.hpp"
 #include "stat/stat.hpp"
 #include <vector>
@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <limits>
 #include <utility>
+#include <iostream>
 
 _Stat::_Stat(Tool T, Graph G) {
     // copy address
@@ -35,7 +36,7 @@ double _Stat::p_value(OwnStack S) {
     auto end_itr = S->seq.end();
     for (auto v_itr = S->seq.begin(); v_itr != end_itr; ++v_itr) {
         if (*v_itr != -1) {
-            this->I_buffer &= *((*(this->graph->V) + *v_itr)->I);
+            this->I_buffer &= *(this->graph->V[*v_itr]->I);;
         }
         if (this->I_buffer.none()) {
             break;
@@ -68,16 +69,17 @@ double _Stat::p_value(OwnStack S) {
 double _Stat::minimal_p_value(OwnStack S) {
     // construct item set in order to compute xs
     this->I_buffer.set();
+    
     auto end_itr = S->seq.end();
     for (auto v_itr = S->seq.begin(); v_itr != end_itr; ++v_itr) {
         if (*v_itr != -1) {
-            this->I_buffer &= *((*(this->graph->V) + *v_itr)->I);
+            this->I_buffer &= *(this->graph->V[*v_itr]->I);
         }
         if (this->I_buffer.none()) {
             break;
         }
     }
-
+    
     double num = 0.0, denum = 0.0;
     double n1sj, n2sj, xsj, nsj;
     double aMin = 0.0, aMax = 0.0;
@@ -86,6 +88,7 @@ double _Stat::minimal_p_value(OwnStack S) {
         n1sj = (double)(this->tool->n1[j]);
         n2sj = (double)(this->tool->n2[j]);
         nsj = (double)(this->tool->n[j]);
+        
 
         num += xsj * n1sj / nsj;
         denum += n1sj * n2sj * xsj * (1.0 - xsj / nsj) / (nsj * (nsj - 1.0));
@@ -93,7 +96,6 @@ double _Stat::minimal_p_value(OwnStack S) {
         aMin += std::max(0.0, xsj - n2sj);
         aMax += std::min(xsj, n1sj);
     }
-
     if (denum == 0.0) {
         return 0.0;
     } else {
@@ -103,6 +105,7 @@ double _Stat::minimal_p_value(OwnStack S) {
         numMax *= numMax;
         return std::max(numMin, numMax) / denum;
     }
+
 }
 
 // This private function is only used in envelope function
@@ -141,7 +144,7 @@ double _Stat::envelope(OwnStack S) {
     auto end_itr = S->seq.end();
     for (auto v_itr = S->seq.begin(); v_itr != end_itr; ++v_itr) {
         if (*v_itr != -1) {
-            this->I_buffer &= *((*(this->graph->V) + *v_itr)->I);
+            this->I_buffer &= *(this->graph->V[*v_itr]->I);
         }
         if (this->I_buffer.none()) {
             break;
