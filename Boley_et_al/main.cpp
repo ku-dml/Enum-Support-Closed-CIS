@@ -44,7 +44,8 @@ double cpu_time();
 void listGraphKey1(Param P, Tool T, Graph G, BFSTool B, itemset &Item, vector<Solution> &store, Stat stat);
 void listGraphBFS(Param P, Tool T, Graph G, BFSTool B,Solution  S, BanList Ban, bitset<ITEM_SIZE> &Item, int key, vector<Solution> &store, Stat stat);
 void listGraphDFS(Param P, Tool T, Graph G, BFSTool B,Solution  S, BanList Ban, itemset &Item, int key, vector<Solution> &store, Stat stat);
-void nextProcess(Param P, Tool T, Graph G, BFSTool B,int i, bitset<ITEM_SIZE> Item, int key, vector<OwnStack> Q);
+void updateStore(Param P, Solution  S, vector<Solution> &store, Stat stat);
+void nextRecursive(Param P, Tool T, Graph G, BFSTool B, itemset &Item, int key, vector<Solution> &store, Stat stat, vector<pair<Solution,BanList> > &Q);
 void initBFSTool(BFSTool B, int n);
 
 
@@ -180,127 +181,66 @@ computeStatisticVal(T);
 // main algorithm when key=1(i.e. excuting first)
 void listGraphKey1(Param P, Tool T, Graph G, BFSTool B, itemset &Item, vector<Solution> &store, Stat stat){
 	vector<pair<Solution,BanList> > Q;
-	Solution S, bufS;
+	Solution S, child;
 	BanList Ban;
 	itemset nextItem;
 	for (int i = 0; i < G->n; ++i) {
-		S = bufS;
+		child = S;  //store "S" in "child". We use the information of "S" in "getClosure".
 		if (G->V[i] == NULL)
 			continue;
 		nextItem.reset();
-		int checkNext = getClosure(P, T, G, B, &S, &Ban, G->V[i], Item, &nextItem); // cl(S) でSを更新
+		int checkNext = getClosure(P, T, G, B, &child, &Ban, G->V[i], Item, &nextItem);  // store a child solution of "S" in "child".
+		//"checkNext" has an information how getClosure finished (get no solution(0), get solution which has no child(2), or get general solution(1))
 		if (checkNext != 0) {
 			if (checkNext == 1) {
-				Q.push_back(make_pair(S, Ban));
+				Q.push_back(make_pair(child, Ban));
 			}
-			if (stat->minimal_p_value(&S) > stat->inverse_threshold(P->alpha, k_p)){
-				store.push_back(S);
-
-				if (store.size()> k_p){
-					k_p++;
-					vector<Solution> storebuf;
-					auto end_itr = store.end();
-					numAnswer = 0;
-					for(auto s_itr = store.begin(); s_itr != end_itr; ++s_itr){
-						if (stat->minimal_p_value(&(*s_itr)) > stat->inverse_threshold(P->alpha, k_p)){
-							storebuf.push_back(*s_itr);
-							numAnswer++;
-						}
-					}
-					store = storebuf;
-				}
-			}
+			updateStore(P, child, store, stat);
 		}
 		Ban.push_back(i);
 	}
-
-	auto end_itr = Q.end();
-	for(auto s_itr = Q.begin(); s_itr != end_itr; ++s_itr){
-		if (stat->envelope(&S) > stat->inverse_threshold(P->alpha, k_p)){
-			if (P->turnWidth <= 1)
-				listGraphDFS(P, T, G, B, s_itr->first,s_itr->second , Item, 2, store, stat);
-			else
-				listGraphBFS(P, T, G, B, s_itr->first,s_itr->second,Item, 2, store, stat);
-		}
-	}
-
+	nextRecursive(P, T, G, B, Item, 1, store, stat, Q);
 }
 
 void listGraphBFS(Param P, Tool T, Graph G, BFSTool B,Solution  S, BanList Ban, itemset &Item, int key, vector<Solution> &store, Stat stat){
-	Solution bufS = S;
+	Solution child = S;
 	vector<pair<Solution,BanList> > Q;
 	vector<int> adjVList = adjList(&Ban, G, &S);
 	vector<Solution> bufStore;
 	auto end = adjVList.end();
 	itemset nextItem;
 	for (auto itr = adjVList.begin(); itr != end; ++itr){
-		S = bufS; //更新されたSを初期に戻す
+		child = S ;  //  store "S" in "child". We use the information of "S" in "getClosure".
 		int i = *itr;
-		int checkNext = getClosure(P, T, G, B, &S, &Ban, G->V[i], Item, &nextItem); // Sを更新
+		int checkNext = getClosure(P, T, G, B, &child, &Ban, G->V[i], Item, &nextItem);  // store a child solution of "S" in "child".
+		//  "checkNext" has an information how getClosure finished (get no solution(0), get solution which has no child(2), or get general solution(1))
 		if (checkNext != 0) {
 			if (checkNext == 1)
-				Q.push_back(make_pair(S, Ban));
-			if (stat->minimal_p_value(&S) < stat->inverse_threshold(P->alpha, k_p)){
-				store.push_back(S);
-				if (store.size()> k_p){
-					k_p++;
-					bufStore.clear();
-					auto end_itr = store.end();
-					numAnswer = 0;
-					for(auto s_itr = store.begin(); s_itr != end_itr; ++s_itr){
-						if (stat->minimal_p_value(&(*s_itr)) > stat->inverse_threshold(P->alpha, k_p)){
-							bufStore.push_back(*s_itr);
-							numAnswer++;
-						}
-					}
-					store = bufStore;
-				}
-			}
+				Q.push_back(make_pair(child, Ban));
+			updateStore(P, child, store, stat);
 		}
 		Ban.push_back(i);
 	}
 	auto end_itr = Q.end();
-		for(auto s_itr = Q.begin(); s_itr != end_itr; ++s_itr){
-			if (stat->envelope(&S) > stat->inverse_threshold(P->alpha, k_p)){
-				if (key == P->turnWidth)
-					listGraphDFS(P, T, G, B, (*s_itr).first, (*s_itr).second, Item, key+1, store, stat);
-				else
-					listGraphBFS(P, T, G, B, (*s_itr).first, (*s_itr).second, Item, key+1, store, stat);
-			}
-		}
+	nextRecursive(P, T, G, B, Item, key, store, stat, Q);
 }
 
 
 void listGraphDFS(Param P, Tool T, Graph G, BFSTool B,Solution  S, BanList Ban, itemset &Item, int key, vector<Solution> &store, Stat stat){
-	Solution bufS;
-	bufS= S;
+	Solution child = S;
 	vector<int> adjVList = adjList(&Ban, G, &S);
 	vector<Solution> bufStore;
 	itemset nextItem;
 	auto end = adjVList.end();
 	for (auto itr = adjVList.begin(); itr != end; ++itr){
-		S = bufS; //更新されたSを初期に戻す
+		child = S; //  store "S" in "child". We use the information of "S" in "getClosure".
 		int i = *itr;
-		int checkNext = getClosure(P, T, G, B, &S, &Ban, G->V[i], Item, &nextItem); // Sを更新
+		int checkNext = getClosure(P, T, G, B, &child, &Ban, G->V[i], Item, &nextItem);  // store a child solution of "S" in "child".
+		//  "checkNext" has an information how getClosure finished (get no solution(0), get solution which has no child(2), or get general solution(1))
 		if (checkNext != 0) {
-			if (stat->minimal_p_value(&S) > stat->inverse_threshold(P->alpha, k_p)){
-				store.push_back(S);
-				if (store.size()> k_p){
-					k_p++;
-					bufStore.clear();
-					auto end_itr = store.end();
-					numAnswer = 0;
-					for(auto s_itr = store.begin(); s_itr != end_itr; ++s_itr){
-						if (stat->minimal_p_value(&(*s_itr)) >stat->inverse_threshold(P->alpha, k_p)){
-							bufStore.push_back(*s_itr);
-							numAnswer++;
-						}
-					}
-					store = bufStore;
-				}
-			}
-			if (checkNext == 1 && stat->envelope(&S) > stat->inverse_threshold(P->alpha, k_p))
-				listGraphDFS(P, T, G, B, S, Ban, Item, key+1, store, stat);
+			updateStore(P, child, store, stat);
+			if (checkNext == 1 && stat->envelope(&child) > stat->inverse_threshold(P->alpha, k_p))
+				listGraphDFS(P, T, G, B, child, Ban, Item, key+1, store, stat);
 		}
 		Ban.push_back(i);
 	}
@@ -313,4 +253,38 @@ void initBFSTool(BFSTool B, int n){
     B->mark.push_back(0);
     B->bfs_color.push_back(BFS_WHITE);
   }
+}
+
+//  add solution "S" to "store" if "S" has good minimal p-value, and reduce elements of "store" if necessary
+void updateStore(Param P, Solution  S, vector<Solution> &store, Stat stat){
+	vector<Solution> bufStore;
+	if (stat->minimal_p_value(&S) > stat->inverse_threshold(P->alpha, k_p)){
+		store.push_back(S);
+		if (store.size()> k_p){
+			k_p++;
+			bufStore.clear();
+			auto end_itr = store.end();
+			numAnswer = 0;
+			for(auto s_itr = store.begin(); s_itr != end_itr; ++s_itr){
+				if (stat->minimal_p_value(&(*s_itr)) > stat->inverse_threshold(P->alpha, k_p)){
+					bufStore.push_back(*s_itr);
+					numAnswer++;
+				}
+			}
+			store = bufStore;
+		}
+	}
+}
+
+// excute BFS or DFS depending on the parameter "turnWidth" when each element in "Q" has a good envelope
+void nextRecursive(Param P, Tool T, Graph G, BFSTool B, itemset &Item, int key, vector<Solution> &store, Stat stat, vector<pair<Solution,BanList> > &Q){
+	auto end_itr = Q.end();
+	for(auto s_itr = Q.begin(); s_itr != end_itr; ++s_itr){
+		if (stat->envelope(&(s_itr->first)) > stat->inverse_threshold(P->alpha, k_p)){
+			if (key == P->turnWidth)
+				listGraphDFS(P, T, G, B, s_itr->first, s_itr->second, Item, key+1, store, stat);
+			else
+				listGraphBFS(P, T, G, B, s_itr->first, s_itr->second, Item, key+1, store, stat);
+		}
+	}
 }

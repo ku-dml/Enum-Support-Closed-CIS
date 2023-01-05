@@ -389,6 +389,8 @@ unsigned int prepareBFS(BFSTool B, int n, VertexIDSeq &seq){
   return marker;
 }
 
+//  update "S" with solution \cl_\sigma( S \cup \{V\} )
+//  return an information how getClosure finished (get no solution(0), get solution which has no child(2), or get general solution(1))
 int getClosure(Param P, Tool T, Graph G, BFSTool B, Solution *S, BanList *Ban, Vertex V, itemset Item, itemset* result) {
 	itemset I = Item & *(V->I);
     int numItems = I.count();
