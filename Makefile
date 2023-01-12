@@ -33,6 +33,8 @@ OBJS_BOLEY_ET_AL = ${foreach src,${SRC_BOLEY_ET_AL},${patsubst %.cpp,${TARGET_DE
 run: ${TARGET}/BoleyEtAl
 	./$<
 
+build: ${TARGET}/BoleyEtAl
+
 # run test
 test: ${TARGET}/PValueTest
 	./$<
