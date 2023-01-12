@@ -26,10 +26,10 @@ _Stat::_Stat(Tool T, Graph G) {
 }
 
 double _Stat::inverse_threshold(double alpha, int k) {
-  return isf(alpha / (double)k);
+  return stat::isf(alpha / (double)k);
 }
 
-double _Stat::survival_function(double x) { return sf(x); }
+double _Stat::survival_function(double x) { return stat::sf(x); }
 
 double _Stat::p_value(OwnStack S) {
   // construct item set in order to compute xs
