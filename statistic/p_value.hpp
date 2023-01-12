@@ -1,7 +1,7 @@
 #ifndef PVALUE_HPP
 #define PVALUE_HPP
 
-#include "../clost/define.h"
+#include "../Boley_et_al/define.h"
 
 class _Stat {
     public:

@@ -1,5 +1,5 @@
-#include "p_value.hpp"
-#include "stat/stat.hpp"
+#include "../statistic/p_value.hpp"
+#include "../statistic/stat/stat.hpp"
 #include <assert.h>
 #include <cmath>
 #include <stdio.h>
