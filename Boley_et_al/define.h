@@ -1,19 +1,17 @@
 /********** define.h **********/
+#ifndef DEFINE_H
+#define DEFINE_H
 
 
 #include <bitset>
 #include <set>
-#include <map>
-#include <queue>
 #include <unordered_map>
+#include <queue>
 
 // macros
 #ifndef LINE_MAX
 #define LINE_MAX 65536
-#endif
-
-#ifndef DEFINE_H
-#define DEFINE_H
+#endif 
 
 #define LEN_FILENAME 256
 
@@ -27,10 +25,13 @@
 #define Smaller -1
 #define Equiv 0
 #define Larger 1
-#define ITEM_SIZE 1000
-#define VERTEX_SIZE 20000
+#define ITEM_SIZE 101
+#define VERTEX_SIZE 300
 
 #define BIT_LENGTH (sizeof(BitString)*8)
+
+using namespace std;
+
 typedef unsigned long long BitString;
 typedef BitString *ItemStr;
 
@@ -38,11 +39,13 @@ typedef BitString *ItemStr;
 
 typedef unsigned long long HugePositive;
 
-typedef std::vector<int> VertexIDSeq;
-typedef std::bitset<VERTEX_SIZE> vertexset;
-typedef std::vector<int> ItemIDSeq;
-typedef std::bitset<ITEM_SIZE> itemset;
-typedef std::vector<int> IntvIDSeq;
+typedef vector<int> VertexIDSeq;
+typedef bitset<VERTEX_SIZE> vertexset;
+typedef vector<int> ItemIDSeq;
+typedef bitset<ITEM_SIZE> itemset;
+typedef vector<int> IntvIDSeq;
+
+
 
 // other typedefs and structures
 typedef struct _AdjList *AdjList;
@@ -55,11 +58,15 @@ typedef struct _Param *Param;
 
 typedef struct _OwnStack *OwnStack;
 
+typedef _OwnStack BanList;
+typedef _OwnStack Solution;
+
+
 struct _Vertex{
   int id;             // vertex id
   VertexIDSeq A;          // adjacency list;List of vertex ID
   int deg;            // degree of vertex
-  std::bitset<ITEM_SIZE> *I;          // bit string that represents item set
+  itemset *I;          // bit string that represents item set
   IntvIDSeq *Itv_ptr; // pointers to IDs of bit strings that contain at least one item
   int items;          // number of one's in I
 };
@@ -74,42 +81,41 @@ struct _Graph{
 };
 
 struct _Tool{
-  std::unordered_map<int, int> VMap;    // vertex name to vertex id
-  std::unordered_map<int, int> VMapInv; // vertex id to vertex name
-  std::unordered_map<int, int> IMap;    // item name to item id
-  std::unordered_map<int, int> IMapInv; // item id to item name
-  std::unordered_map<int, int> PMap;    // population name to population id
-  std::unordered_map<int, int> PMapInv; // population id to population name
+  unordered_map<int, int> VMap;    // vertex name to vertex id
+  unordered_map<int, int> VMapInv; // vertex id to vertex name
+  unordered_map<int, int> IMap;    // item name to item id
+  unordered_map<int, int> IMapInv; // item id to item name
+  unordered_map<int, int> PMap;    // population name to population id
+  unordered_map<int, int> PMapInv; // population id to population name
   int reduced_vertices;
   int reduced_edges;
   VertexIDSeq seq_all;
-  std::vector<VertexIDSeq> seq_item;
+  vector<VertexIDSeq> seq_item;
   itemset phenotype; 
-  std::vector<itemset> population;
+  vector<itemset> population;
   int numPop ;
-  std::vector<int> n;	//nj in the paper
-  std::vector<int> n1;
-  std::vector<int> n2;
-
-  OwnStack C;//Result
-  OwnStack B;//check
+  vector<int> n;	//nj in the paper
+  vector<int> n1;
+  vector<int> n2;
 };
 
 struct _BFSTool{
   unsigned int marker;     // marker for BFS in {1,...,marker_max-1}
   unsigned int marker_max; // will be initialized to MARKER_MAX
-  std::vector<unsigned int> mark;        // mark for BFS
-  std::vector<unsigned int> bfs_color;   // color for BFS
+  vector<unsigned int> mark;        // mark for BFS
+  vector<unsigned int> bfs_color;   // color for BFS
 };
   
 #define INI_seed 1
 #define INI_sigma 1
 #define INI_delta 0.0
+#define INI_turnWidth 1;
 #define INI_tlim -1.0
 #define INI_reduce true
 #define INI_outname "out.txt"
 #define INI_distname "dist.txt"
 #define INI_ramub -1
+
 
 struct _Param{
   char *ptn_file;
@@ -118,6 +124,7 @@ struct _Param{
   char *population_file; 
   int theta;
   double alpha;
+  int turnWidth;
   int seed;
   int sigma;
   double delta;
@@ -149,5 +156,4 @@ struct _OwnStack{
   }
 
 };
-
 #endif
