@@ -1,6 +1,7 @@
 #include "stat.hpp"
 #include "igam.hpp"
 #include "igami.hpp"
+#include "igam.hpp"
 
 double MACHEP = 1.11022302462515654042E-16; // 2**-53
 double MAXLOG = 8.8029691931113054295988E1; // log(2**127)

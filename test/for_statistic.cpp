@@ -81,25 +81,23 @@ void test2() {
   printf("\nTest 2:\n");
   // case 1
   _Tool T = testcase1_tool();
-  _Graph G;
+  Graph G;
+  G = new struct _Graph;
+  G->V = new Vertex[5];
 
   _Vertex *V = (_Vertex *)malloc(5 * sizeof(_Vertex));
   auto items = testcase1_items();
 
-  _Vertex v1, v2, v3, v4, v5;
-  v1.I = &std::get<0>(items);
-  V[0] = v1;
-  v2.I = &std::get<1>(items);
-  V[1] = v2;
-  v3.I = &std::get<2>(items);
-  V[2] = v3;
-  v4.I = &std::get<3>(items);
-  V[3] = v4;
-  v5.I = &std::get<4>(items);
-  V[4] = v5;
+  for (int i = 0; i < 5; ++i) {
+    G->V[i] = new struct _Vertex;
+  }
+  G->V[0]->I = &std::get<0>(items);
+  G->V[1]->I = &std::get<1>(items);
+  G->V[2]->I = &std::get<2>(items);
+  G->V[3]->I = &std::get<3>(items);
+  G->V[4]->I = &std::get<4>(items);
 
-  G.V = &V;
-  _Stat stat(&T, &G);
+  _Stat stat(&T, G);
   _OwnStack S;
   std::vector<int> v{0, 1, 2};
   S.seq = v;
@@ -127,25 +125,23 @@ void test3() {
   printf("\nTest 3:\n");
   // case 1
   _Tool T = testcase1_tool();
-  _Graph G;
+  Graph G;
+  G = new struct _Graph;
+  G->V = new Vertex[5];
 
   _Vertex *V = (_Vertex *)malloc(5 * sizeof(_Vertex));
   auto items = testcase1_items();
 
-  _Vertex v1, v2, v3, v4, v5;
-  v1.I = &std::get<0>(items);
-  V[0] = v1;
-  v2.I = &std::get<1>(items);
-  V[1] = v2;
-  v3.I = &std::get<2>(items);
-  V[2] = v3;
-  v4.I = &std::get<3>(items);
-  V[3] = v4;
-  v5.I = &std::get<4>(items);
-  V[4] = v5;
+  for (int i = 0; i < 5; ++i) {
+    G->V[i] = new struct _Vertex;
+  }
+  G->V[0]->I = &std::get<0>(items);
+  G->V[1]->I = &std::get<1>(items);
+  G->V[2]->I = &std::get<2>(items);
+  G->V[3]->I = &std::get<3>(items);
+  G->V[4]->I = &std::get<4>(items);
 
-  G.V = &V;
-  _Stat stat(&T, &G);
+  _Stat stat(&T, G);
   _OwnStack S;
   std::vector<int> v{0, 1, 2};
   S.seq = v;
@@ -173,25 +169,23 @@ void test4() {
   printf("\nTest 4:\n");
   // case 1
   _Tool T = testcase1_tool();
-  _Graph G;
+  Graph G;
+  G = new struct _Graph;
+  G->V = new Vertex[5];
 
   _Vertex *V = (_Vertex *)malloc(5 * sizeof(_Vertex));
   auto items = testcase1_items();
 
-  _Vertex v1, v2, v3, v4, v5;
-  v1.I = &std::get<0>(items);
-  V[0] = v1;
-  v2.I = &std::get<1>(items);
-  V[1] = v2;
-  v3.I = &std::get<2>(items);
-  V[2] = v3;
-  v4.I = &std::get<3>(items);
-  V[3] = v4;
-  v5.I = &std::get<4>(items);
-  V[4] = v5;
+  for (int i = 0; i < 5; ++i) {
+    G->V[i] = new struct _Vertex;
+  }
+  G->V[0]->I = &std::get<0>(items);
+  G->V[1]->I = &std::get<1>(items);
+  G->V[2]->I = &std::get<2>(items);
+  G->V[3]->I = &std::get<3>(items);
+  G->V[4]->I = &std::get<4>(items);
 
-  G.V = &V;
-  _Stat stat(&T, &G);
+  _Stat stat(&T, G);
   _OwnStack S;
   std::vector<int> v{0, 1, 2};
   S.seq = v;
