@@ -1,4 +1,4 @@
-/* 
+/*
  * cpu_time() returns CPU time in seconds.
  *
  * It will be safer to do dummy call right after program starts.
@@ -27,88 +27,88 @@
  *  double cpu_time( void );
  */
 
-
 #ifdef TEST
 #include <stdio.h>
-#define TEST_MESSAGE(s) printf("by %s\n",s)
+#define TEST_MESSAGE(s) printf("by %s\n", s)
 #else
 #define TEST_MESSAGE(s)
 #endif /* TEST */
 
 #ifdef __STDC__
-double cpu_time( void );
+double cpu_time(void);
 #endif /* __STDC__ */
 
+#if ((defined(MSDOS) || defined(__MSDOS__) || defined(__BORLANDC__) ||         \
+      defined(LSI_C) || defined(_MSC_VER) || defined(__WATCOMC__)) &&          \
+     !(defined(unix) || defined(__unix)))
 
-#if ( (defined(MSDOS) || defined(__MSDOS__) || defined(__BORLANDC__) || \
-       defined(LSI_C) || defined(_MSC_VER)  || defined(__WATCOMC__)) && \
-      !(defined(unix) || defined(__unix))  )
-
-        /* MS-DOS */
+/* MS-DOS */
 #include <time.h>
 #if !defined(CLOCKS_PER_SEC) && defined(CLK_TCK)
 #define CLOCKS_PER_SEC CLK_TCK
 #endif
-double cpu_time( void ) {
-    clock_t t;  static clock_t last = (clock_t)-1;
-    TEST_MESSAGE("clock()");
-    t = clock();
-    if (last == (clock_t)-1) last = t;
-    return (double)(t-last)/CLOCKS_PER_SEC;
+double cpu_time(void) {
+  clock_t t;
+  static clock_t last = (clock_t)-1;
+  TEST_MESSAGE("clock()");
+  t = clock();
+  if (last == (clock_t)-1)
+    last = t;
+  return (double)(t - last) / CLOCKS_PER_SEC;
 }
-        /* MS-DOS */
+/* MS-DOS */
 
 #else /* unix */
 
-#include <sys/time.h>
 #include <sys/resource.h>
+#include <sys/time.h>
 #include <unistd.h>
 #ifdef RUSAGE_SELF
 
-        /* Sun 5.5, Linux, FreeBSD, DJGPP */
+/* Sun 5.5, Linux, FreeBSD, DJGPP */
 double cpu_time() {
-    struct rusage tmp;
-    TEST_MESSAGE("getrusage()");
-    if ( getrusage( RUSAGE_SELF, &tmp ) ) return 0.0;
-    return (double)(tmp.ru_utime.tv_sec)
-          +(double)(tmp.ru_utime.tv_usec)/1000000;
+  struct rusage tmp;
+  TEST_MESSAGE("getrusage()");
+  if (getrusage(RUSAGE_SELF, &tmp))
+    return 0.0;
+  return (double)(tmp.ru_utime.tv_sec) +
+         (double)(tmp.ru_utime.tv_usec) / 1000000;
 }
-        /* Sun 5.5, Linux, FreeBSD, DJGPP */
+/* Sun 5.5, Linux, FreeBSD, DJGPP */
 #else
-        /* Sun 5.3 */
-#include <sys/types.h>
+/* Sun 5.3 */
 #include <sys/times.h>
+#include <sys/types.h>
 double cpu_time() {
-    struct tms tmp;
-    TEST_MESSAGE("times()");
-    if ( times( &tmp ) == -1 ) return 0.0;
-    return (double)(tmp.tms_utime)/CLK_TCK;
+  struct tms tmp;
+  TEST_MESSAGE("times()");
+  if (times(&tmp) == -1)
+    return 0.0;
+  return (double)(tmp.tms_utime) / CLK_TCK;
 }
-        /* Sun 5.3 */
+/* Sun 5.3 */
 #endif
 
 #endif /* unix */
 
-
 #ifdef TEST
 int main() {
-    int i, j, k;
+  int i, j, k;
 
-    cpu_time(); /* dummy */
-    for ( i=0; i<25; i++ ) {
-        for ( j=1; j<300000; j++ ) {
-            k = j*j*j*j;
-            k /= j;
-            k /= j;
-            k /= j;
-        }
-        j=k;
-        printf( "time:%.4f(sec)\n", cpu_time() );
+  cpu_time(); /* dummy */
+  for (i = 0; i < 25; i++) {
+    for (j = 1; j < 300000; j++) {
+      k = j * j * j * j;
+      k /= j;
+      k /= j;
+      k /= j;
     }
-    return 0;
+    j = k;
+    printf("time:%.4f(sec)\n", cpu_time());
+  }
+  return 0;
 }
 #endif /* TEST */
-
 
 /*
  * This program calculates, like

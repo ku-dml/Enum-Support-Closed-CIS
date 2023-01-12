@@ -1,4 +1,5 @@
 /***** common.h *****/
+#include "define.h"
 
 void checkArgs(int argc, char *argv[]);
 void readArgs(Param P, Graph G, int argc, char *argv[]);

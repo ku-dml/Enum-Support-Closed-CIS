@@ -14,8 +14,9 @@
 
 // static double lanczos_sum(double x) {
 //   return ratevl(x, lanczos_num,
-//                 sizeof(lanczos_num) / sizeof(lanczos_num[0]) - 1, lanczos_denom,
-//                 sizeof(lanczos_denom) / sizeof(lanczos_denom[0]) - 1);
+//                 sizeof(lanczos_num) / sizeof(lanczos_num[0]) - 1,
+//                 lanczos_denom, sizeof(lanczos_denom) /
+//                 sizeof(lanczos_denom[0]) - 1);
 // }
 
 double lanczos_sum_expg_scaled(double x) {

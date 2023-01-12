@@ -1,11 +1,11 @@
-#include "p_value.hpp"
-#include "stat/stat.hpp"
+#include "../statistic/p_value.hpp"
+#include "../statistic/stat/stat.hpp"
 #include <assert.h>
 #include <cmath>
 #include <stdio.h>
-#include <vector>
 #include <stdlib.h>
 #include <tuple>
+#include <vector>
 
 double ERR = 1e-10;
 
@@ -14,6 +14,7 @@ void test1();
 void test2();
 void test3();
 void test4();
+void test5();
 double for_minimal_p_value(std::vector<double> xs, std::vector<double> n1s,
                            std::vector<double> n2s);
 double for_envelope(std::vector<double> xs, std::vector<double> n1s,
@@ -29,6 +30,7 @@ int main() {
   test2();
   test3();
   test4();
+  test5();
 
   printf("\nAll test passed!\n");
   return 0;
@@ -79,25 +81,23 @@ void test2() {
   printf("\nTest 2:\n");
   // case 1
   _Tool T = testcase1_tool();
-  _Graph G;
+  Graph G;
+  G = new struct _Graph;
+  G->V = new Vertex[5];
 
-  _Vertex* V = (_Vertex *)malloc(5 * sizeof(_Vertex));
+  _Vertex *V = (_Vertex *)malloc(5 * sizeof(_Vertex));
   auto items = testcase1_items();
 
-  _Vertex v1, v2, v3, v4, v5;
-  v1.I = &std::get<0>(items);
-  V[0] = v1;
-  v2.I = &std::get<1>(items);
-  V[1] = v2;
-  v3.I = &std::get<2>(items);
-  V[2] = v3;
-  v4.I = &std::get<3>(items);
-  V[3] = v4;
-  v5.I = &std::get<4>(items);
-  V[4] = v5;
+  for (int i = 0; i < 5; ++i) {
+    G->V[i] = new struct _Vertex;
+  }
+  G->V[0]->I = &std::get<0>(items);
+  G->V[1]->I = &std::get<1>(items);
+  G->V[2]->I = &std::get<2>(items);
+  G->V[3]->I = &std::get<3>(items);
+  G->V[4]->I = &std::get<4>(items);
 
-  G.V = &V;
-  _Stat stat(&T, &G);
+  _Stat stat(&T, G);
   _OwnStack S;
   std::vector<int> v{0, 1, 2};
   S.seq = v;
@@ -125,25 +125,23 @@ void test3() {
   printf("\nTest 3:\n");
   // case 1
   _Tool T = testcase1_tool();
-  _Graph G;
+  Graph G;
+  G = new struct _Graph;
+  G->V = new Vertex[5];
 
-  _Vertex* V = (_Vertex *)malloc(5 * sizeof(_Vertex));
+  _Vertex *V = (_Vertex *)malloc(5 * sizeof(_Vertex));
   auto items = testcase1_items();
 
-  _Vertex v1, v2, v3, v4, v5;
-  v1.I = &std::get<0>(items);
-  V[0] = v1;
-  v2.I = &std::get<1>(items);
-  V[1] = v2;
-  v3.I = &std::get<2>(items);
-  V[2] = v3;
-  v4.I = &std::get<3>(items);
-  V[3] = v4;
-  v5.I = &std::get<4>(items);
-  V[4] = v5;
+  for (int i = 0; i < 5; ++i) {
+    G->V[i] = new struct _Vertex;
+  }
+  G->V[0]->I = &std::get<0>(items);
+  G->V[1]->I = &std::get<1>(items);
+  G->V[2]->I = &std::get<2>(items);
+  G->V[3]->I = &std::get<3>(items);
+  G->V[4]->I = &std::get<4>(items);
 
-  G.V = &V;
-  _Stat stat(&T, &G);
+  _Stat stat(&T, G);
   _OwnStack S;
   std::vector<int> v{0, 1, 2};
   S.seq = v;
@@ -171,25 +169,23 @@ void test4() {
   printf("\nTest 4:\n");
   // case 1
   _Tool T = testcase1_tool();
-  _Graph G;
+  Graph G;
+  G = new struct _Graph;
+  G->V = new Vertex[5];
 
-  _Vertex* V = (_Vertex *)malloc(5 * sizeof(_Vertex));
+  _Vertex *V = (_Vertex *)malloc(5 * sizeof(_Vertex));
   auto items = testcase1_items();
 
-  _Vertex v1, v2, v3, v4, v5;
-  v1.I = &std::get<0>(items);
-  V[0] = v1;
-  v2.I = &std::get<1>(items);
-  V[1] = v2;
-  v3.I = &std::get<2>(items);
-  V[2] = v3;
-  v4.I = &std::get<3>(items);
-  V[3] = v4;
-  v5.I = &std::get<4>(items);
-  V[4] = v5;
+  for (int i = 0; i < 5; ++i) {
+    G->V[i] = new struct _Vertex;
+  }
+  G->V[0]->I = &std::get<0>(items);
+  G->V[1]->I = &std::get<1>(items);
+  G->V[2]->I = &std::get<2>(items);
+  G->V[3]->I = &std::get<3>(items);
+  G->V[4]->I = &std::get<4>(items);
 
-  G.V = &V;
-  _Stat stat(&T, &G);
+  _Stat stat(&T, G);
   _OwnStack S;
   std::vector<int> v{0, 1, 2};
   S.seq = v;
@@ -329,7 +325,7 @@ std::tuple<itemset, itemset, itemset, itemset, itemset> testcase1_items() {
   i5.reset(1);
   i5.reset(4);
 
-  return std::make_tuple(i1, i2 ,i3, i4, i5);
+  return std::make_tuple(i1, i2, i3, i4, i5);
 }
 
 _Tool testcase1_tool() {
@@ -383,4 +379,24 @@ _Tool testcase1_tool() {
   T.n2 = n2;
 
   return T;
+}
+
+// for inverse_threshold
+void test5() {
+  printf("\nTest 5:\n");
+  _Tool T;
+  T.numPop = 1;
+  _Stat stat = _Stat(&T, nullptr);
+  std::vector<double> testcase5{0.5, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6,
+                                0.7, 0.8, 0.9, 1.0, 2.0, 3.0, 4.0};
+  std::vector<double> expected5{
+      0.47950012218695337, 0.7518296340458492,  0.6547208460185768,
+      0.583882420770365,   0.5270892568655381,  0.47950012218695337,
+      0.4385780260809997,  0.40278369424647564, 0.37109336952269756,
+      0.34278171114790873, 0.31731050786291115, 0.15729920705028105,
+      0.08326451666355042, 0.04550026389635857,
+  };
+  for (int i = 0; i < testcase5.size(); ++i) {
+    assert_eq(stat.survival_function(testcase5[i]), expected5[i]);
+  }
 }

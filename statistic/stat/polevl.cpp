@@ -59,8 +59,8 @@ double p1evl(double x, const double coef[], int N_pol) {
 /* Evaluate a rational function. See [1]. */
 
 // static NPY_INLINE double ratevl(double x, const double num[], int M,
-double ratevl(double x, const double num[], int M,
-                            const double denom[], int N_pol) {
+double ratevl(double x, const double num[], int M, const double denom[],
+              int N_pol) {
   int i, dir;
   double y, num_ans, denom_ans;
   double absx = fabs(x);
