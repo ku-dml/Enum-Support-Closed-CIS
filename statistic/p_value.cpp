@@ -30,6 +30,10 @@ double _Stat::inverse_threshold(double alpha, int k) {
     return isf(alpha / (double)k);
 }
 
+double _Stat::survival_function(double x) {
+    return sf(x);
+}
+
 double _Stat::p_value(OwnStack S) {
     // construct item set in order to compute xs
     this->I_buffer.set();
