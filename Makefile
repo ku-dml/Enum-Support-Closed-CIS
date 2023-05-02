@@ -13,11 +13,19 @@ TARGET = target
 TARGET_DEPS = ${TARGET}/deps
 
 # src file
-SRC := ${shell find . -depth 1 -name "*.cpp"}
-SRC_BOLEY_ET_AL := ${shell find ${DIR_BOLEY_ET_AL} -depth 1 -name "*.cpp"}
-SRC_STAT := ${shell find ${DIR_STAT} -depth 1 -name "*.cpp"}
-SRC_PVALUE := ${shell find ${DIR_PVALUE} -depth 1 -name "*.cpp"}
-SRC_TEST := ${shell find ${DIR_TEST} -depth 1 -name "*.cpp"}
+ifeq ($(shell uname),Linux)
+	SRC := ${shell find . -mindepth 1 -maxdepth 1 -name "*.cpp"}
+	SRC_BOLEY_ET_AL := ${shell find ${DIR_BOLEY_ET_AL} -mindepth 1 -maxdepth 1 -name "*.cpp"}
+	SRC_STAT := ${shell find ${DIR_STAT} -mindepth 1 -maxdepth 1 -name "*.cpp"}
+	SRC_PVALUE := ${shell find ${DIR_PVALUE} -mindepth 1 -maxdepth 1 -name "*.cpp"}
+	SRC_TEST := ${shell find ${DIR_TEST} -mindepth 1 -maxdepth 1 -name "*.cpp"}
+else
+	SRC := ${shell find . -depth 1 -name "*.cpp"}
+	SRC_BOLEY_ET_AL := ${shell find ${DIR_BOLEY_ET_AL} -depth 1 -name "*.cpp"}
+	SRC_STAT := ${shell find ${DIR_STAT} -depth 1 -name "*.cpp"}
+	SRC_PVALUE := ${shell find ${DIR_PVALUE} -depth 1 -name "*.cpp"}
+	SRC_TEST := ${shell find ${DIR_TEST} -depth 1 -name "*.cpp"}
+endif
 
 SRCS = ${SRC} ${SRC_BOLEY_ET_AL} ${SRC_STAT} ${SRC_PVALUE} ${SRC_TEST}
 SRCS_LIB = ${SRC} ${SRC_STAT} ${SRC_PVALUE}
