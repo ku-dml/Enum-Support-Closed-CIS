@@ -218,6 +218,7 @@ void readPattern(Param P, Tool T, Graph G) {
 
   while (fgets(str, LINE_MAX - 1, in) != NULL) {
     if (str[0] == '#')
+      // comment?
       continue;
     strcpy(str_item, ""); // for the case itemset is empty
     sscanf(str, "%s%s", str_id, str_item);
@@ -269,9 +270,11 @@ void readPhenotype(Param P, Tool T) {
   in = open_file(P->phenotype_file, "r");
   T->phenotype.reset();
   while (fgets(str, LINE_MAX - 1, in) != NULL) {
-    if (str[0] == '#')
+    if (str[0] == 'I') {
+      // skip first line
       continue;
-    sscanf(str, "%s%s", str_iid, str_phenotype);
+    }
+    sscanf(str, "#%s%s", str_iid, str_phenotype);
     i = T->IMap[atoi(str_iid)];
     if (atoi(str_phenotype))
       T->phenotype.set(i);
