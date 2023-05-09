@@ -61,7 +61,6 @@ typedef struct _OwnStack *OwnStack;
 typedef _OwnStack BanList;
 typedef _OwnStack Solution;
 
-
 struct _Vertex{
   int id;             // vertex id
   VertexIDSeq A;          // adjacency list;List of vertex ID
@@ -105,7 +104,7 @@ struct _BFSTool{
   vector<unsigned int> mark;        // mark for BFS
   vector<unsigned int> bfs_color;   // color for BFS
 };
-  
+
 #define INI_seed 1
 #define INI_sigma 1
 #define INI_delta 0.0

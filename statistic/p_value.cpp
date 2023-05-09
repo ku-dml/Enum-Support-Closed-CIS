@@ -56,13 +56,19 @@ double _Stat::p_value(OwnStack S) {
     n2sj = (double)(this->tool->n2[j]);
     nsj = (double)(this->tool->n[j]);
 
+    // cout << asj << " " << xsj << " " << n1sj << " " << n2sj << endl;
+    // cout << ~this->I_buffer << endl;
+    // cout << this->tool->population[0] << endl;
+    // cout << this->tool->phenotype << endl;
+
     a += asj;
     num += xsj * n1sj / nsj;
     denum += n1sj * n2sj * xsj * (1.0 - xsj / nsj) / (nsj * (nsj - 1.0));
   }
 
   if (denum == 0.0) {
-    return 0.0;
+    // return 0.0;
+    // return __DBL_MAX__;
   } else {
     num = a - num;
     num *= num;
@@ -93,6 +99,7 @@ double _Stat::minimal_p_value(OwnStack S) {
     n2sj = (double)(this->tool->n2[j]);
     nsj = (double)(this->tool->n[j]);
 
+
     num += xsj * n1sj / nsj;
     denum += n1sj * n2sj * xsj * (1.0 - xsj / nsj) / (nsj * (nsj - 1.0));
 
@@ -122,6 +129,8 @@ double _Stat::minimal_p_value_inner(const std::vector<double> &xs) {
     n2sj = (double)(this->tool->n2[j]);
     nsj = n1sj + n2sj;
 
+    // cout << xsj << " " << n1sj << " " << n2sj << " " << nsj << endl; 
+
     num += xsj * n1sj / nsj;
     denum += n1sj * n2sj * xsj * (1.0 - xsj / nsj) / (nsj * (nsj - 1.0));
 
@@ -141,6 +150,10 @@ double _Stat::minimal_p_value_inner(const std::vector<double> &xs) {
 }
 
 double _Stat::envelope(OwnStack S) {
+  // cout << "endvelope" << endl;
+  // cout << this->betaLs_buffer.size() << endl;
+  // cout << this->J << endl;
+
   // construct item set in order to compute xs
   this->I_buffer.set();
   auto end_itr = S->seq.end();
@@ -176,16 +189,25 @@ double _Stat::envelope(OwnStack S) {
   double env = 0.0;
   int piL, piR;
   for (int j = 0; j < this->J; ++j) {
+    // cout << "for" << endl;
     piL = std::get<1>(this->betaLs_buffer[j]);
     piR = std::get<1>(this->betaRs_buffer[j]);
 
     this->xStarsL_buffer[piL] =
         std::max(this->xs_buffer[piL], (double)(this->tool->n2[piL]));
     env = std::max(env, this->minimal_p_value_inner(this->xStarsL_buffer));
+    // cout << "1: " << this->minimal_p_value_inner(this->xStarsL_buffer) << endl;
+    // for (auto e: this->xStarsL_buffer) {
+    //   cout << e << endl;
+    // }
 
     this->xStarsR_buffer[piR] =
         std::max(this->xs_buffer[piL], (double)(this->tool->n1[piL]));
     env = std::max(env, this->minimal_p_value_inner(this->xStarsR_buffer));
+    // cout << "2: " << this->minimal_p_value_inner(this->xStarsR_buffer) << endl;
+    // for (auto e: this->xStarsR_buffer) {
+    //   cout << e << endl;
+    // }
   }
 
   return env;
