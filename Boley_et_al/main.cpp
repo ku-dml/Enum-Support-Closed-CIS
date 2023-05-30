@@ -133,13 +133,13 @@ int main(int argc, char *argv[]) {
   auto end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
 
-  cout << "Graphs and p-value" << endl;
-  for (auto itr = container.begin(); itr != container.end(); ++itr) {
-    if (stat->p_value(&(itr->second)) > stat->inverse_threshold(P->alpha, k_p)) {
-      printGraph(&(itr->second), T);
-      cout << "p-value: " << stat->survival_function(stat->p_value(&(itr->second))) << endl;
-    }
-  }
+  // cout << "Graphs and p-value" << endl;
+  // for (auto itr = container.begin(); itr != container.end(); ++itr) {
+  //   if (stat->p_value(&(itr->second)) > stat->inverse_threshold(P->alpha, k_p)) {
+  //     printGraph(&(itr->second), T);
+  //     cout << "p-value: " << stat->survival_function(stat->p_value(&(itr->second))) << endl;
+  //   }
+  // }
 
   cout << "All: " << container.size() << endl;
   numAnswer = container.size();
