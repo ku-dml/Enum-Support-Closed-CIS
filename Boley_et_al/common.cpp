@@ -6,6 +6,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <map>
+#include <fstream>
 
 // C++ libraries
 #include <algorithm>
@@ -518,4 +520,26 @@ double Pcmh(Param P, Tool T, Graph G, OwnStack S) {
   //   cout<<numer << " " << denom << endl;
   //   if (isnan(numer/denom)) return 0.0;
   return 1.0 - erf(sqrt(0.5 * numer / denom));
+}
+
+void writeSignificantsToFile(std::string filename, std::multimap<double, _OwnStack> container) {
+  cout << "writing to file... ";
+
+  std::ofstream file;
+  file.open(filename, std::ios::out);
+  file << "p-value,v-indices" << std::endl;
+  auto end_itr = container.end();
+  for (auto c_itr = container.begin(); c_itr != end_itr; ++c_itr) {
+    // write p-value,
+    file << c_itr->first;
+    // then, v
+    for (auto &e: c_itr->second.seq) {
+      file << "," << e;
+    }
+    file << std::endl;
+  }
+
+
+ file.close();
+  cout << "finished!" << endl;
 }

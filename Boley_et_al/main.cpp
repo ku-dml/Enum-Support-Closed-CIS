@@ -145,7 +145,7 @@ int main(int argc, char *argv[]) {
   numAnswer = container.size();
   cout << "k_p: " << k_p << endl;
   cout << "Significants: " << container.size() << endl;
-
+  cout << "outname: " << P->outname << endl;
   
 
 #ifdef MEM
@@ -178,6 +178,8 @@ int main(int argc, char *argv[]) {
     printf("reduced_vertices:\t%d\n", T->reduced_vertices);
     printf("reduced_edges:\t%d\n", T->reduced_edges);
   }
+
+  writeSignificantsToFile(std::string(P->outname), container);
 
   /*** postprocess ***/
   delete P;
@@ -295,7 +297,8 @@ void findSignificants(Param P, multimap<double, Solution> &container, Stat stat)
   for (auto c_itr = container.begin(); c_itr != end_itr; ++c_itr) {
     double p = stat->p_value(&(c_itr->second));
     if (p > th) {
-      bufContainer.emplace(p, c_itr->second);
+      auto p_value = stat->survival_function(p);
+      bufContainer.emplace(p_value, c_itr->second);
     } else {
       buf.push_back(p);
     }

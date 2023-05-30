@@ -1,5 +1,6 @@
 /***** common.h *****/
 #include "define.h"
+#include <map>
 
 void checkArgs(int argc, char *argv[]);
 void readArgs(Param P, Graph G, int argc, char *argv[]);
@@ -21,3 +22,4 @@ void printGraph(OwnStack R, Tool T);
 vector<int> adjList(BanList *Ban,  Graph G, OwnStack S);
 void allPrint(OwnStack R);
 double Pcmh(Param P, Tool T, Graph G, OwnStack S);
+void writeSignificantsToFile(std::string filename, std::multimap<double, _OwnStack> container);
