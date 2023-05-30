@@ -263,7 +263,7 @@ void readPattern(Param P, Tool T, Graph G) {
 void readPhenotype(Param P, Tool T) {
   char *str, *str_iid, *str_phenotype;
   FILE *in;
-  int i;
+  int i = 0;
   str = new char[LINE_MAX];
   str_iid = new char[LINE_MAX];
   str_phenotype = new char[LINE_MAX];
@@ -275,9 +275,11 @@ void readPhenotype(Param P, Tool T) {
       continue;
     }
     sscanf(str, "#%s%s", str_iid, str_phenotype);
-    i = T->IMap[atoi(str_iid)];
-    if (atoi(str_phenotype))
+    i = T->IMap[atoi(str_iid) - 1];
+    if (atoi(str_phenotype) == 1) {
       T->phenotype.set(i);
+    }
+    i++;
   }
   delete[] str;
   delete[] str_iid;

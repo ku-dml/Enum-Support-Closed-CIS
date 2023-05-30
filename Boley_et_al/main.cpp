@@ -182,10 +182,35 @@ int main(int argc, char *argv[]) {
 
   // for (int i = 0; i < 100; ++i) {
     Solution s;
-    s.push_back(99);
+    auto nine_nine = T->VMapInv[99];
+    cout << "nine_nine: " << nine_nine << endl;
+    s.push_back(nine_nine);
     cout << 99 << ": " << stat->envelope(&s) << " -> " << stat->minimal_p_value(&s)
       << " -> " << stat->p_value(&s) << endl;;
   // }
+  // cout << stat->tool->phenotype << endl;
+  // 00100001110011100101010011000111110100100101001000101110011001101101001000100111100111001011110010011
+  // 0101011010011101101010000101011001111100010100000001100001001100101011100101010111101110001011101101
+  // 0101011010011101101010000101011001111100010100000001100001001100101011100101010111101110001011101101
+  // 0101101110100011101111010101001110101001100100001100000001010001111100110101000010101101110010110101
+
+  // for (int i = 0; i < T->IMap.size(); i++) {
+  //   cout << i << ": " << T->IMap[i] << endl;
+  // } 
+
+  // auto items = {0,2,4,7,9,10,12,14,17,19,21,22,23,24,25,26,29,31,32,39,40,42,44,45,46,48,49,50,53,56,58,59,60,62,63,65,67,71,72,74,76,82,83,87,88,89,91,95,98};
+  // for (int i = 0; i <100; i++) {
+  //   auto v = 0;
+  //   for (int j = 0; j < items.len(); j++) {
+  //     if (items[j] == i) {
+  //       v = 1;
+  //       break;
+  //     }
+  //   }
+  //   cout << v;
+  // }
+  // 00110011000100001001111101000011000001100110100001111010100011101011011001110110011011101001111011011
+  // 01011011101000111011110101010011101010011001000011000000010100011111001101010000101011011100101101010
 
   /*** postprocess ***/
   delete P;
@@ -296,6 +321,7 @@ void updateStore(Param P, Solution S, multimap<double, Solution> &container, Sta
 }
 
 void findSignificants(Param P, multimap<double, Solution> &container, Stat stat) {
+  vector<double> buf;
   multimap<double, Solution> bufContainer;
   double th = stat->inverse_threshold(P->alpha, k_p);
   auto end_itr = container.end();
@@ -303,8 +329,12 @@ void findSignificants(Param P, multimap<double, Solution> &container, Stat stat)
     double p = stat->p_value(&(c_itr->second));
     if (p > th) {
       bufContainer.emplace(p, c_itr->second);
+    } else {
+      buf.push_back(p);
     }
   }
+  std::sort(buf.begin(), buf.end());
+  cout << buf[buf.size() - 1] << ", " << buf[buf.size() - 2] << endl;
   numSignificant = bufContainer.size();
   cout << "TH: " << th << endl;
   container = bufContainer;

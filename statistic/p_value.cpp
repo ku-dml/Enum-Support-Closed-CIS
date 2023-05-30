@@ -38,18 +38,36 @@ double _Stat::p_value(OwnStack S) {
   for (auto v_itr = S->seq.begin(); v_itr != end_itr; ++v_itr) {
     if (*v_itr != -1) {
       this->I_buffer &= *(this->graph->V[*v_itr]->I);
-      ;
     }
     if (this->I_buffer.none()) {
       break;
     }
   }
+  // cout << ~this->I_buffer << endl;
+  // cout << (~this->I_buffer).count() << endl;
+  // auto v = std::vector<int>();
+  // auto a_tmp = 0;
+  // for (int i = 0; i < this->I_buffer.size(); ++i) {
+  //   if (this->I_buffer[i] == 1) {
+  //     v.push_back(this->tool->IMapInv[i]);
+  //     if (this->tool->phenotype[i] == 1) {
+  //       a_tmp++;
+  //     }
+  //     // printf("%d, ", this->tool->IMapInv[i]);
+  //   }
+  // }
+  // std::sort(v.begin(), v.end());
+  // for (auto &e: v) {
+  //   cout << e << ", ";
+  // }
+  // cout << " -> " << a_tmp << endl;
+
 
   double a = 0.0, num = 0.0, denum = 0.0;
   double n1sj, n2sj, xsj, nsj, asj;
   for (int j = 0; j < this->J; ++j) {
     xsj = (double)((~(this->I_buffer)) & this->tool->population[j]).count();
-    asj = (double)((~(this->I_buffer)) & this->tool->population[j] &
+    asj = (double)(((~(this->I_buffer)) & this->tool->population[j]) &
                    this->tool->phenotype)
               .count();
     n1sj = (double)(this->tool->n1[j]);
@@ -60,6 +78,9 @@ double _Stat::p_value(OwnStack S) {
     // cout << ~this->I_buffer << endl;
     // cout << this->tool->population[0] << endl;
     // cout << this->tool->phenotype << endl;
+
+    // printf("\n%f, %f, %f, %f, %f\n", xsj, asj, n1sj, n2sj, nsj);
+    // cout << ((~this->I_buffer) & this->tool->population[j] & this->tool->phenotype).count() << endl;
 
     a += asj;
     num += xsj * n1sj / nsj;
