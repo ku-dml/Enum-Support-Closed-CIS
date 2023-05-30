@@ -301,7 +301,7 @@ void readPopulation(Param P, Tool T) {
     if (str[0] == '#')
       continue;
     sscanf(str, "%s%s", str_iid, str_population);
-    i = T->IMap[atoi(str_iid)];
+    i = T->IMap[atoi(str_iid)-1];
     pop = T->PMap[atoi(str_population)];
     T->population[pop].set(i);
   }
@@ -473,7 +473,6 @@ void printGraph(OwnStack C, Tool T) {
       cout << T->VMapInv[*itr] << " ";
     }
   }
-  // cout << endl;
 }
 
 vector<int> adjList(BanList *Ban, Graph G, OwnStack S) {

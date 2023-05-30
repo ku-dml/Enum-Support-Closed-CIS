@@ -18,6 +18,7 @@ function run () {
 
 }
 
+make clean
 make ./target/BoleyEtAl
 
 # Speed 1
