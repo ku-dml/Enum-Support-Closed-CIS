@@ -95,7 +95,6 @@ int main(int argc, char *argv[]) {
   initTool(T, G);
   initBFSTool(B, G->n);
 
-  // vector<Solution> store;
   multimap<double, Solution> container;
   _Stat st = _Stat(T, G);
   Stat stat = &st;
@@ -134,7 +133,6 @@ int main(int argc, char *argv[]) {
   auto end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
 
-  cout << "All: " << container.size() << endl;
   cout << "k_p: " << k_p << endl;
   cout << "Significants: " << container.size() << endl;
   cout << "outname: " << P->outname << endl;

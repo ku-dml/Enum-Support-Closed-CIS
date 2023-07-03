@@ -19,7 +19,6 @@ function run () {
         echo exp $t:
         convert $t
         ./target/BoleyEtAl './data/data.ptn' './data/data.grh' "./data/tmp$t.id_phenotype" "./data/tmp$t.id_population" 1 $a -outname "results/ebg-$n-$p-$a-$g-$t.csv"
-        # ./target/BoleyEtAl './data/data.ptn' './data/data.grh' "./data/tmp$i.id_population" "./data/tmp$i.id_phenotype"  1 "$1"
         echo
     done
 

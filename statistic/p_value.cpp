@@ -61,7 +61,6 @@ double _Stat::p_value(OwnStack S) {
   }
 
   if (denum == 0.0) {
-    // return 0.0;
     return __DBL_MAX__;
   } else {
     num = a - num;

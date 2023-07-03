@@ -107,7 +107,6 @@ double expm1(double x) {
 
   // if (!cephes_isfinite(x)) {
   if (!std::isfinite(x)) {
-    // if (cephes_std::isnan(x)) {
     if (std::isnan(x)) {
       return x;
     } else if (x > 0) {

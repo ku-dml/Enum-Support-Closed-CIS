@@ -241,7 +241,6 @@ double igami(double a, double p) {
   int i;
   double x, fac, f_fp, fpp_fp;
 
-  // if (npy_std::isnan(a) || npy_std::isnan(p)) {
   if (std::isnan(a) || std::isnan(p)) {
     // return NPY_NAN;
     return NAN;
@@ -283,7 +282,6 @@ double igamci(double a, double q) {
   int i;
   double x, fac, f_fp, fpp_fp;
 
-  // if (npy_std::isnan(a) || npy_std::isnan(q)) {
   if (std::isnan(a) || std::isnan(q)) {
     // return NPY_NAN;
     return NAN;
