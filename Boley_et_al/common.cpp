@@ -8,6 +8,7 @@
 #include <string.h>
 #include <map>
 #include <fstream>
+#include <cmath>
 
 // C++ libraries
 #include <algorithm>
@@ -517,8 +518,6 @@ double Pcmh(Param P, Tool T, Graph G, OwnStack S) {
   }
 
   numer = numer * numer;
-  //   cout<<numer << " " << denom << endl;
-  //   if (isnan(numer/denom)) return 0.0;
   return 1.0 - erf(sqrt(0.5 * numer / denom));
 }
 

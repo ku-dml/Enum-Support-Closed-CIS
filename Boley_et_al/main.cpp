@@ -128,21 +128,13 @@ int main(int argc, char *argv[]) {
   checkTime = start_time;
   auto start = std::chrono::system_clock::now();
   listGraphKey1(P, T, G, B, Item, container, stat);
+  numAnswer = container.size();
   findSignificants(P, container, stat);
   fin_time = cpu_time();
   auto end = std::chrono::system_clock::now();
   std::chrono::duration<double> elapsed_seconds = end - start;
 
-  // cout << "Graphs and p-value" << endl;
-  // for (auto itr = container.begin(); itr != container.end(); ++itr) {
-  //   if (stat->p_value(&(itr->second)) > stat->inverse_threshold(P->alpha, k_p)) {
-  //     printGraph(&(itr->second), T);
-  //     cout << "p-value: " << stat->survival_function(stat->p_value(&(itr->second))) << endl;
-  //   }
-  // }
-
   cout << "All: " << container.size() << endl;
-  numAnswer = container.size();
   cout << "k_p: " << k_p << endl;
   cout << "Significants: " << container.size() << endl;
   cout << "outname: " << P->outname << endl;
