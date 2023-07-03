@@ -241,8 +241,7 @@ double igami(double a, double p) {
   int i;
   double x, fac, f_fp, fpp_fp;
 
-  // if (npy_isnan(a) || npy_isnan(p)) {
-  if (isnan(a) || isnan(p)) {
+  if (std::isnan(a) || std::isnan(p)) {
     // return NPY_NAN;
     return NAN;
   } else if ((a < 0) || (p < 0) || (p > 1)) {
@@ -268,7 +267,7 @@ double igami(double a, double p) {
     /* The ratio of the first and second derivatives simplifies */
     fpp_fp = -1.0 + (a - 1) / x;
     // if (npy_isinf(fpp_fp)) {
-    if (isinf(fpp_fp)) {
+    if (std::isinf(fpp_fp)) {
       /* Resort to Newton's method in the case of overflow */
       x = x - f_fp;
     } else {
@@ -283,8 +282,7 @@ double igamci(double a, double q) {
   int i;
   double x, fac, f_fp, fpp_fp;
 
-  // if (npy_isnan(a) || npy_isnan(q)) {
-  if (isnan(a) || isnan(q)) {
+  if (std::isnan(a) || std::isnan(q)) {
     // return NPY_NAN;
     return NAN;
   } else if ((a < 0.0) || (q < 0.0) || (q > 1.0)) {
@@ -308,7 +306,7 @@ double igamci(double a, double q) {
     f_fp = (igamc(a, x) - q) * x / (-fac);
     fpp_fp = -1.0 + (a - 1) / x;
     // if (npy_isinf(fpp_fp)) {
-    if (isinf(fpp_fp)) {
+    if (std::isinf(fpp_fp)) {
       x = x - f_fp;
     } else {
       x = x - f_fp / (1.0 - 0.5 * f_fp * fpp_fp);

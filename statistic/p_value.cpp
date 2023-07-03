@@ -38,7 +38,6 @@ double _Stat::p_value(OwnStack S) {
   for (auto v_itr = S->seq.begin(); v_itr != end_itr; ++v_itr) {
     if (*v_itr != -1) {
       this->I_buffer &= *(this->graph->V[*v_itr]->I);
-      ;
     }
     if (this->I_buffer.none()) {
       break;
@@ -49,7 +48,7 @@ double _Stat::p_value(OwnStack S) {
   double n1sj, n2sj, xsj, nsj, asj;
   for (int j = 0; j < this->J; ++j) {
     xsj = (double)((~(this->I_buffer)) & this->tool->population[j]).count();
-    asj = (double)((~(this->I_buffer)) & this->tool->population[j] &
+    asj = (double)(((~(this->I_buffer)) & this->tool->population[j]) &
                    this->tool->phenotype)
               .count();
     n1sj = (double)(this->tool->n1[j]);
@@ -62,7 +61,7 @@ double _Stat::p_value(OwnStack S) {
   }
 
   if (denum == 0.0) {
-    return 0.0;
+    return __DBL_MAX__;
   } else {
     num = a - num;
     num *= num;
@@ -92,6 +91,7 @@ double _Stat::minimal_p_value(OwnStack S) {
     n1sj = (double)(this->tool->n1[j]);
     n2sj = (double)(this->tool->n2[j]);
     nsj = (double)(this->tool->n[j]);
+
 
     num += xsj * n1sj / nsj;
     denum += n1sj * n2sj * xsj * (1.0 - xsj / nsj) / (nsj * (nsj - 1.0));

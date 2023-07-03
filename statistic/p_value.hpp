@@ -22,6 +22,7 @@ class _Stat {
         double minimal_p_value_inner(const std::vector<double>& xs);
         // given data
         int J;
+    public:
         Tool tool;
         Graph graph;
         // use to avoid unnecessary heap allocations

@@ -26,7 +26,7 @@
 #define Equiv 0
 #define Larger 1
 #define ITEM_SIZE 101
-#define VERTEX_SIZE 300
+#define VERTEX_SIZE 30000
 
 #define BIT_LENGTH (sizeof(BitString)*8)
 
@@ -60,7 +60,6 @@ typedef struct _OwnStack *OwnStack;
 
 typedef _OwnStack BanList;
 typedef _OwnStack Solution;
-
 
 struct _Vertex{
   int id;             // vertex id
@@ -105,7 +104,7 @@ struct _BFSTool{
   vector<unsigned int> mark;        // mark for BFS
   vector<unsigned int> bfs_color;   // color for BFS
 };
-  
+
 #define INI_seed 1
 #define INI_sigma 1
 #define INI_delta 0.0

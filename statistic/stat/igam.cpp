@@ -66,12 +66,12 @@ double igam(double a, double x) {
   } else if (x == 0) {
     /* Zero integration limit */
     return 0;
-  } else if (isinf(a)) {
-    if (isinf(x)) {
+  } else if (std::isinf(a)) {
+    if (std::isinf(x)) {
       return NAN;
     }
     return 0;
-  } else if (isinf(x)) {
+  } else if (std::isinf(x)) {
     return 1;
   }
 
@@ -105,12 +105,12 @@ double igamc(double a, double x) {
     }
   } else if (x == 0) {
     return 1;
-  } else if (isinf(a)) {
-    if (isinf(x)) {
+  } else if (std::isinf(a)) {
+    if (std::isinf(x)) {
       return NAN;
     }
     return 1;
-  } else if (isinf(x)) {
+  } else if (std::isinf(x)) {
     return 0;
   }
 

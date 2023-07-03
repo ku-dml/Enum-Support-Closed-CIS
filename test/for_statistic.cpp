@@ -15,6 +15,7 @@ void test2();
 void test3();
 void test4();
 void test5();
+void test6();
 double for_minimal_p_value(std::vector<double> xs, std::vector<double> n1s,
                            std::vector<double> n2s);
 double for_envelope(std::vector<double> xs, std::vector<double> n1s,
@@ -31,6 +32,7 @@ int main() {
   test3();
   test4();
   test5();
+  test6();
 
   printf("\nAll test passed!\n");
   return 0;
@@ -399,4 +401,8 @@ void test5() {
   for (int i = 0; i < testcase5.size(); ++i) {
     assert_eq(stat.survival_function(testcase5[i]), expected5[i]);
   }
+}
+
+void test6() {
+  printf("\nTest 6:\n");
 }

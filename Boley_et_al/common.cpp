@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <map>
+#include <fstream>
+#include <cmath>
 
 // C++ libraries
 #include <algorithm>
@@ -218,6 +221,7 @@ void readPattern(Param P, Tool T, Graph G) {
 
   while (fgets(str, LINE_MAX - 1, in) != NULL) {
     if (str[0] == '#')
+      // comment?
       continue;
     strcpy(str_item, ""); // for the case itemset is empty
     sscanf(str, "%s%s", str_id, str_item);
@@ -262,19 +266,23 @@ void readPattern(Param P, Tool T, Graph G) {
 void readPhenotype(Param P, Tool T) {
   char *str, *str_iid, *str_phenotype;
   FILE *in;
-  int i;
+  int i = 0;
   str = new char[LINE_MAX];
   str_iid = new char[LINE_MAX];
   str_phenotype = new char[LINE_MAX];
   in = open_file(P->phenotype_file, "r");
   T->phenotype.reset();
   while (fgets(str, LINE_MAX - 1, in) != NULL) {
-    if (str[0] == '#')
+    if (str[0] == 'I') {
+      // skip first line
       continue;
-    sscanf(str, "%s%s", str_iid, str_phenotype);
-    i = T->IMap[atoi(str_iid)];
-    if (atoi(str_phenotype))
+    }
+    sscanf(str, "#%s%s", str_iid, str_phenotype);
+    i = T->IMap[atoi(str_iid) - 1];
+    if (atoi(str_phenotype) == 1) {
       T->phenotype.set(i);
+    }
+    i++;
   }
   delete[] str;
   delete[] str_iid;
@@ -296,7 +304,7 @@ void readPopulation(Param P, Tool T) {
     if (str[0] == '#')
       continue;
     sscanf(str, "%s%s", str_iid, str_population);
-    i = T->IMap[atoi(str_iid)];
+    i = T->IMap[atoi(str_iid)-1];
     pop = T->PMap[atoi(str_population)];
     T->population[pop].set(i);
   }
@@ -468,7 +476,6 @@ void printGraph(OwnStack C, Tool T) {
       cout << T->VMapInv[*itr] << " ";
     }
   }
-  // cout << endl;
 }
 
 vector<int> adjList(BanList *Ban, Graph G, OwnStack S) {
@@ -511,7 +518,27 @@ double Pcmh(Param P, Tool T, Graph G, OwnStack S) {
   }
 
   numer = numer * numer;
-  //   cout<<numer << " " << denom << endl;
-  //   if (isnan(numer/denom)) return 0.0;
   return 1.0 - erf(sqrt(0.5 * numer / denom));
+}
+
+void writeSignificantsToFile(std::string filename, std::multimap<double, _OwnStack> container) {
+  cout << "writing to file... ";
+
+  std::ofstream file;
+  file.open(filename, std::ios::out);
+  file << "p-value,v-indices" << std::endl;
+  auto end_itr = container.end();
+  for (auto c_itr = container.begin(); c_itr != end_itr; ++c_itr) {
+    // write p-value,
+    file << c_itr->first;
+    // then, v
+    for (auto &e: c_itr->second.seq) {
+      file << "," << e;
+    }
+    file << std::endl;
+  }
+
+
+ file.close();
+  cout << "finished!" << endl;
 }
