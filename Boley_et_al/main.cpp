@@ -245,8 +245,9 @@ void listGraphDFS(Param P, Tool T, Graph G, BFSTool B, Solution S, BanList Ban,
         getClosure(P, T, G, B, &S, &Ban, G->V[i], Item, &nextItem); // Sを更新
     if (checkNext != 0) {
       updateStore(P, S, container, stat);
-      if (checkNext == 1 &&
-          stat->envelope(&S) > stat->inverse_threshold(P->alpha, k_p))
+      // if (checkNext == 1 &&
+      //     stat->envelope(&S) > stat->inverse_threshold(P->alpha, k_p))
+      if (checkNext == 1)
         listGraphDFS(P, T, G, B, S, Ban, Item, key + 1, container, stat);
     }
     Ban.push_back(i);
@@ -269,12 +270,12 @@ void updateStore(Param P, Solution S, multimap<double, Solution> &container, Sta
     container.emplace(value, S);
     if (container.size() > k_p) {
       k_p++;
-      auto itr = container.begin();
-      auto end = container.lower_bound(threshold);
+      // auto itr = container.begin();
+      // auto end = container.lower_bound(threshold);
       // Remove candidates whose p-value is greater than threshold.
       // Note that we use the inverse function of the survival function
       // for the importance comparisons, so we are removing those with smaller values.
-      container.erase(itr, end);
+      // container.erase(itr, end);
     }
   }
 }
@@ -306,8 +307,8 @@ void nextRecursive(Param P, Tool T, Graph G, BFSTool B, itemset &Item, int key,
 
 
   for (auto s_itr = Q.begin(); s_itr != end_itr; ++s_itr) {
-    if (stat->envelope(&(s_itr->first)) >
-        stat->inverse_threshold(P->alpha, k_p)) {
+    // if (stat->envelope(&(s_itr->first)) >
+    //     stat->inverse_threshold(P->alpha, k_p)) {
       if (key == P->turnWidth) {
         listGraphDFS(P, T, G, B, s_itr->first, s_itr->second, Item, key + 1,
                      container, stat);
@@ -316,5 +317,5 @@ void nextRecursive(Param P, Tool T, Graph G, BFSTool B, itemset &Item, int key,
                      container, stat);
       }
     }
-  }
+  // }
 }

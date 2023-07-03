@@ -70,6 +70,7 @@ double _Stat::p_value(OwnStack S) {
 }
 
 double _Stat::minimal_p_value(OwnStack S) {
+  return __DBL_MAX__;
   // construct item set in order to compute xs
   this->I_buffer.set();
 
@@ -141,6 +142,7 @@ double _Stat::minimal_p_value_inner(const std::vector<double> &xs) {
 }
 
 double _Stat::envelope(OwnStack S) {
+  return __DBL_MAX__;
   // construct item set in order to compute xs
   this->I_buffer.set();
   auto end_itr = S->seq.end();
