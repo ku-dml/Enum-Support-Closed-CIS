@@ -92,3 +92,38 @@ FILE *open_file(char *filename, char *mode) {
   }
   return fp;
 }
+
+/*** Virtual Memory currently used by current process ***/
+int getVirtualMem(){ //Note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmSize:", 7) == 0){
+            // result = parseLine(line);
+            printf("%s", line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
+}
+
+
+/*** Physical Memory (RAM) currently used by current process ***/
+int getPhysicalMem(){ //Note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmRSS:", 6) == 0){
+            // result = parseLine(line);
+            printf("%s", line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
+}
