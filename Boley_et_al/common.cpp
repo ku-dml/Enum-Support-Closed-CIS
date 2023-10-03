@@ -53,8 +53,7 @@ void checkArgs(int argc, char *argv[]) {
         INI_outname);
     fprintf(stderr, "  -distname <STR> ... filename for distribution\n",
             INI_outname);
-    fprintf(stderr,
-            "  -ramub <INT> ... upper bound on used amount of RAM (%d)\n",
+    fprintf(stderr, "  -ramub <INT> ... upper bound on used amount of RAM (%d)\n",
             INI_ramub);
     exit(EXIT_FAILURE);
   }
@@ -232,6 +231,7 @@ void readPattern(Param P, Tool T, Graph G) {
     G->V[x]->Itv_ptr = new IntvIDSeq[1];
     G->V[x]->I = new itemset;
     G->V[x]->I->reset();
+
     if (strcmp(str_item, "") == Equiv || strcmp(str_item, "!") == Equiv) {
       G->V[x]->items = 0;
     } else {
@@ -449,7 +449,7 @@ int getClosure(Param P, Tool T, Graph G, BFSTool B, Solution *S, BanList *Ban,
     Q.pop();
   }
   *result = I;
-  if (numItems == 1)
+  if (numItems == P->theta)
     return 2;
   return 1;
 }

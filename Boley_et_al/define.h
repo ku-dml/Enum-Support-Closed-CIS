@@ -25,8 +25,8 @@
 #define Smaller -1
 #define Equiv 0
 #define Larger 1
-#define ITEM_SIZE 101
-#define VERTEX_SIZE 30000
+#define ITEM_SIZE 500 //101
+#define VERTEX_SIZE 100001
 
 #define BIT_LENGTH (sizeof(BitString)*8)
 

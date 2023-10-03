@@ -24,6 +24,7 @@
 #include <queue>
 #include <unordered_map>
 #include <vector>
+#include <tuple>
 using namespace std;
 
 // custom libraries
@@ -40,17 +41,17 @@ double cpu_time();
 
 /***** declarations *****/
 void listGraphKey1(Param P, Tool T, Graph G, BFSTool B, itemset &Item,
-                   multimap<double, Solution> &container, Stat stat);
+                   multimap<double, Solution> &container, Stat stat, int depth);
 void listGraphBFS(Param P, Tool T, Graph G, BFSTool B, Solution S, BanList Ban,
                   bitset<ITEM_SIZE> &Item, int key, multimap<double, Solution> &container,
-                  Stat stat);
+                  Stat stat, int depth);
 void listGraphDFS(Param P, Tool T, Graph G, BFSTool B, Solution S, BanList Ban,
-                  itemset &Item, int key, multimap<double, Solution> &container, Stat stat);
+                  itemset &Item, int key, multimap<double, Solution> &container, Stat stat, int depth);
 void updateStore(Param P, Solution S, multimap<double, Solution> &container, Stat stat);
 void findSignificants(Param P, multimap<double, Solution> &container, Stat stat);
 void nextRecursive(Param P, Tool T, Graph G, BFSTool B, itemset &Item, int key,
                    multimap<double, Solution> &container, Stat stat,
-                   vector<pair<Solution, BanList>> &Q);
+                   vector<tuple<Solution, BanList, itemset>> &Q, int depth);
 void initBFSTool(BFSTool B, int n);
 
 #ifdef DEBUG
@@ -65,7 +66,11 @@ int numNode = 0;
 int adjTimes = 0;
 int k_p = 1;
 double checkTime = 0.0;
+
 bool timeout = false;
+std::chrono::system_clock::time_point start_t;
+std::chrono::system_clock::time_point end_t;
+
 
 /***** main function *****/
 int main(int argc, char *argv[]) {
@@ -125,13 +130,14 @@ int main(int argc, char *argv[]) {
   /*** run algorithm ***/
   start_time = cpu_time();
   checkTime = start_time;
-  auto start = std::chrono::system_clock::now();
-  listGraphKey1(P, T, G, B, Item, container, stat);
-  numAnswer = container.size();
+  numAnswer = 0; //container.size();
+  start_t = std::chrono::system_clock::now();
+  listGraphKey1(P, T, G, B, Item, container, stat, 0);
   findSignificants(P, container, stat);
   fin_time = cpu_time();
-  auto end = std::chrono::system_clock::now();
-  std::chrono::duration<double> elapsed_seconds = end - start;
+  end_t = std::chrono::system_clock::now();
+  std::chrono::duration<double> elapsed_seconds;
+  elapsed_seconds = end_t - start_t;
 
   cout << "k_p: " << k_p << endl;
   cout << "Significants: " << container.size() << endl;
@@ -180,13 +186,21 @@ int main(int argc, char *argv[]) {
 
 // main algorithm when key=1(i.e. excuting first)
 void listGraphKey1(Param P, Tool T, Graph G, BFSTool B, itemset &Item,
-                   multimap<double, Solution> &container, Stat stat) {
-  vector<pair<Solution, BanList>> Q;
+                   multimap<double, Solution> &container, Stat stat, int depth) {
+  vector<tuple<Solution, BanList, itemset>> Q;
   Solution S, bufS;
   BanList Ban;
   itemset nextItem;
-
+  
   for (int i = 0; i < G->n; ++i) {
+    std::chrono::duration<double> elapsed;
+    auto now_t = std::chrono::system_clock::now();
+    elapsed = now_t-start_t;
+    if(elapsed.count() > P->tlim){
+      timeout = true;
+      return;
+    }
+    
     S = bufS;
     if (G->V[i] == NULL)
       continue;
@@ -195,19 +209,22 @@ void listGraphKey1(Param P, Tool T, Graph G, BFSTool B, itemset &Item,
                                &nextItem); // cl(S) でSを更新
     if (checkNext != 0) {
       if (checkNext == 1) {
-        Q.push_back(make_pair(S, Ban));
+        Q.emplace_back(S, Ban, nextItem);
+      } else {
+        // This node does not have any candidate of child
+        numAnswer++;
       }
       updateStore(P, S, container, stat);
     }
     Ban.push_back(i);
   }
-  nextRecursive(P, T, G, B, Item, 2, container, stat, Q);
+  nextRecursive(P, T, G, B, Item, 2, container, stat, Q, depth + 1);
 }
 
 void listGraphBFS(Param P, Tool T, Graph G, BFSTool B, Solution S, BanList Ban,
-                  itemset &Item, int key, multimap<double, Solution> &container, Stat stat) {
+                  itemset &Item, int key, multimap<double, Solution> &container, Stat stat, int depth) {
   Solution bufS = S;
-  vector<pair<Solution, BanList>> Q;
+  vector<tuple<Solution, BanList, itemset>> Q;
   vector<int> adjVList = adjList(&Ban, G, &S);
   vector<Solution> bufStore;
   auto end = adjVList.end();
@@ -219,18 +236,22 @@ void listGraphBFS(Param P, Tool T, Graph G, BFSTool B, Solution S, BanList Ban,
     int checkNext =
         getClosure(P, T, G, B, &S, &Ban, G->V[i], Item, &nextItem); // Sを更新
     if (checkNext != 0) {
-      if (checkNext == 1)
-        Q.push_back(make_pair(S, Ban));
+      if (checkNext == 1) {
+        Q.emplace_back(S, Ban, nextItem);
+      } else {
+        // This node does not have any candidate of child
+        numAnswer++;
+      }
       updateStore(P, S, container, stat);
     }
     Ban.push_back(i);
   }
   auto end_itr = Q.end();
-  nextRecursive(P, T, G, B, Item, key, container, stat, Q);
+  nextRecursive(P, T, G, B, Item, key, container, stat, Q, depth+1);
 }
 
 void listGraphDFS(Param P, Tool T, Graph G, BFSTool B, Solution S, BanList Ban,
-                  itemset &Item, int key, multimap<double, Solution> &container, Stat stat) {
+                  itemset &Item, int key, multimap<double, Solution> &container, Stat stat, int depth) {
   Solution bufS;
   bufS = S;
   vector<int> adjVList = adjList(&Ban, G, &S);
@@ -244,10 +265,18 @@ void listGraphDFS(Param P, Tool T, Graph G, BFSTool B, Solution S, BanList Ban,
     int checkNext =
         getClosure(P, T, G, B, &S, &Ban, G->V[i], Item, &nextItem); // Sを更新
     if (checkNext != 0) {
-      updateStore(P, S, container, stat);
+      if (key % 2 == 0) {
+        updateStore(P, S, container, stat);
+        numAnswer++;
+      }
       if (checkNext == 1 &&
-          stat->envelope(&S) > stat->inverse_threshold(P->alpha, k_p))
-        listGraphDFS(P, T, G, B, S, Ban, Item, key + 1, container, stat);
+          stat->envelope(&S) > stat->inverse_threshold(P->alpha, k_p)) {
+        listGraphDFS(P, T, G, B, S, Ban, Item, key + 1, container, stat, depth+1);
+      }
+      if (key % 2 != 0) {
+        updateStore(P, S, container, stat);
+        numAnswer++;
+      }
     }
     Ban.push_back(i);
   }
@@ -263,20 +292,23 @@ void initBFSTool(BFSTool B, int n) {
 }
 
 void updateStore(Param P, Solution S, multimap<double, Solution> &container, Stat stat) {
-  auto value = stat->minimal_p_value(&S);
-  auto threshold = stat->inverse_threshold(P->alpha, k_p);
-  if (value > threshold) {
-    container.emplace(value, S);
-    if (container.size() > k_p) {
-      k_p++;
-      auto itr = container.begin();
-      auto end = container.lower_bound(threshold);
-      // Remove candidates whose p-value is greater than threshold.
-      // Note that we use the inverse function of the survival function
-      // for the importance comparisons, so we are removing those with smaller values.
-      container.erase(itr, end);
-    }
-  }
+  // auto value = stat->minimal_p_value(&S);
+  // HERE 2
+  // auto threshold = stat->inverse_threshold(P->alpha, k_p);
+  // if (value > threshold) {
+  
+  /*container.emplace(value, S);*/
+    
+    // if (container.size() > k_p) {
+    //   k_p++;
+    //   auto itr = container.begin();
+    //   auto end = container.lower_bound(threshold);
+    //   // Remove candidates whose p-value is greater than threshold.
+    //   // Note that we use the inverse function of the survival function
+    //   // for the importance comparisons, so we are removing those with smaller values.
+    //   container.erase(itr, end);
+    // }
+  // }
 }
 
 void findSignificants(Param P, multimap<double, Solution> &container, Stat stat) {
@@ -300,21 +332,39 @@ void findSignificants(Param P, multimap<double, Solution> &container, Stat stat)
 
 void nextRecursive(Param P, Tool T, Graph G, BFSTool B, itemset &Item, int key,
                    multimap<double, Solution> &container, Stat stat,
-                   vector<pair<Solution, BanList>> &Q) {
+                   vector<tuple<Solution, BanList, itemset>> &Q, int depth) {
   auto end_itr = Q.end();
   numNode++;
 
 
+  /*** process timeout ***/
+  std::chrono::duration<double> elapsed;
+  auto now_t = std::chrono::system_clock::now();
+  elapsed = now_t-start_t;
+  if(elapsed.count() > P->tlim){
+    timeout = true;
+    return;
+  }
+    
+
   for (auto s_itr = Q.begin(); s_itr != end_itr; ++s_itr) {
-    if (stat->envelope(&(s_itr->first)) >
-        stat->inverse_threshold(P->alpha, k_p)) {
-      if (key == P->turnWidth) {
-        listGraphDFS(P, T, G, B, s_itr->first, s_itr->second, Item, key + 1,
-                     container, stat);
-      } else {
-        listGraphBFS(P, T, G, B, s_itr->first, s_itr->second, Item, key + 1,
-                     container, stat);
+    // HERE 1
+    // if (stat->envelope(&(s_itr->first)) >
+    //     stat->inverse_threshold(P->alpha, k_p)) {
+      auto [S, Ban, nextItem] = *s_itr;
+      if (key % 2 == 0) {
+        numAnswer++;
       }
-    }
+      if (key == P->turnWidth) {
+        listGraphDFS(P, T, G, B, S, Ban, nextItem, key + 1,
+                     container, stat, depth);
+      } else {
+        listGraphBFS(P, T, G, B, S, Ban, nextItem, key + 1,
+                     container, stat, depth);
+      }
+      if (key % 2 != 0) {
+        numAnswer++;
+      }
+    // }
   }
 }
