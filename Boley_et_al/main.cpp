@@ -61,6 +61,7 @@ int *F;
 #endif
 
 int numAnswer = 0;
+int numCandidates = 0;
 int numSignificant = 0;
 int numNode = 0;
 int adjTimes = 0;
@@ -133,6 +134,7 @@ int main(int argc, char *argv[]) {
   numAnswer = 0; //container.size();
   start_t = std::chrono::system_clock::now();
   listGraphKey1(P, T, G, B, Item, container, stat, 0);
+  numCandidates = container.size();
   findSignificants(P, container, stat);
   fin_time = cpu_time();
   end_t = std::chrono::system_clock::now();
@@ -166,6 +168,7 @@ int main(int argc, char *argv[]) {
   }
 
   cout << "all_subgraphs:\t" << numAnswer << "\n";
+  cout << "all_candidates:\t" << numCandidates << "\n";
   cout << "all_ignificants:\t" << numSignificant << "\n";
   cout << "all_nodes\t" << numNode << endl;
   cout << "cpu_time:\t" << fin_time - start_time << "\n";
@@ -292,23 +295,22 @@ void initBFSTool(BFSTool B, int n) {
 }
 
 void updateStore(Param P, Solution S, multimap<double, Solution> &container, Stat stat) {
-  // auto value = stat->minimal_p_value(&S);
-  // HERE 2
-  // auto threshold = stat->inverse_threshold(P->alpha, k_p);
-  // if (value > threshold) {
+  auto value = stat->minimal_p_value(&S);
+  auto threshold = stat->inverse_threshold(P->alpha, k_p);
+  if (value > threshold) {
   
-  /*container.emplace(value, S);*/
+  container.emplace(value, S);
     
-    // if (container.size() > k_p) {
-    //   k_p++;
-    //   auto itr = container.begin();
-    //   auto end = container.lower_bound(threshold);
-    //   // Remove candidates whose p-value is greater than threshold.
-    //   // Note that we use the inverse function of the survival function
-    //   // for the importance comparisons, so we are removing those with smaller values.
-    //   container.erase(itr, end);
-    // }
-  // }
+    if (container.size() > k_p) {
+      k_p++;
+      auto itr = container.begin();
+      auto end = container.lower_bound(threshold);
+      // Remove candidates whose p-value is greater than threshold.
+      // Note that we use the inverse function of the survival function
+      // for the importance comparisons, so we are removing those with smaller values.
+      container.erase(itr, end);
+    }
+  }
 }
 
 void findSignificants(Param P, multimap<double, Solution> &container, Stat stat) {
@@ -348,10 +350,9 @@ void nextRecursive(Param P, Tool T, Graph G, BFSTool B, itemset &Item, int key,
     
 
   for (auto s_itr = Q.begin(); s_itr != end_itr; ++s_itr) {
-    // HERE 1
-    // if (stat->envelope(&(s_itr->first)) >
-    //     stat->inverse_threshold(P->alpha, k_p)) {
-      auto [S, Ban, nextItem] = *s_itr;
+    auto [S, Ban, nextItem] = *s_itr;
+    if (stat->envelope(&S) >
+        stat->inverse_threshold(P->alpha, k_p)) {
       if (key % 2 == 0) {
         numAnswer++;
       }
@@ -365,6 +366,6 @@ void nextRecursive(Param P, Tool T, Graph G, BFSTool B, itemset &Item, int key,
       if (key % 2 != 0) {
         numAnswer++;
       }
-    // }
+    }
   }
 }
