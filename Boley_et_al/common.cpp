@@ -55,6 +55,10 @@ void checkArgs(int argc, char *argv[]) {
             INI_outname);
     fprintf(stderr, "  -ramub <INT> ... upper bound on used amount of RAM (%d)\n",
             INI_ramub);
+    fprintf(
+        stderr,
+        "  -common-outname <STR> ... filename of common output from vtable & itable (%s)\n",
+        INI_common_outname);  
     exit(EXIT_FAILURE);
   }
 }
@@ -78,6 +82,7 @@ void readArgs(Param P, Graph G, int argc, char *argv[]) {
   P->vtable = NULL;
   P->itable = NULL;
   P->outname = new char[LEN_FILENAME];
+  P->common_outname = new char[LEN_FILENAME];
   P->distname = NULL;
   P->ramub = INI_ramub;
   strcpy(P->outname, INI_outname);
@@ -111,6 +116,8 @@ void readArgs(Param P, Graph G, int argc, char *argv[]) {
       strcpy(P->distname, argv[k + 1]);
     } else if (strcmp(arg, "ramub") == Equiv)
       P->ramub = atoi(argv[k + 1]);
+    else if (strcmp(arg, "common-outname") == Equiv)
+      strcpy(P->common_outname, argv[k + 1]);
     else {
       fprintf(stderr, "error: <%s> is illegal parameter.\n", arg);
       exit(EXIT_FAILURE);

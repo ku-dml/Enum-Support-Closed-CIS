@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <iostream>
+#include <fstream>
+
 #ifdef _OPENMP
 #include <omp.h>
 #endif
@@ -143,7 +146,7 @@ int main(int argc, char *argv[]) {
 
   cout << "k_p: " << k_p << endl;
   cout << "Significants: " << container.size() << endl;
-  cout << "outname: " << P->outname << endl;
+  cout << "outname: " << P->common_outname << endl;
   
 
 #ifdef MEM
@@ -179,6 +182,12 @@ int main(int argc, char *argv[]) {
   }
 
   writeSignificantsToFile(std::string(P->outname), container);
+
+  std::ofstream common_file;
+  common_file.open(std::string(P->common_outname), std::ios::app);
+  common_file << G->n << "," << k_p << "," << numCandidates << ",";
+  common_file << numSignificant << "," << elapsed_seconds.count() << std::endl;;
+  common_file.close();
 
   /*** postprocess ***/
   delete P;
