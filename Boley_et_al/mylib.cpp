@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sstream>
 
 #include "mylib.h"
 
@@ -91,4 +92,50 @@ FILE *open_file(char *filename, char *mode) {
     exit(EXIT_FAILURE);
   }
   return fp;
+}
+
+
+int parseLine(char line[128]) {
+  std::stringstream ss;
+  std::string name;
+  int value;
+  ss << line;
+  ss >> name;
+  ss >> value;
+  return value;
+}
+
+/*** Virtual Memory currently used by current process ***/
+int getVirtualMem(){ //Note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmSize:", 7) == 0){
+            result = parseLine(line);
+            printf("%s", line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
+}
+
+
+/*** Physical Memory (RAM) currently used by current process ***/
+int getPhysicalMem(){ //Note: this value is in KB!
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+
+    while (fgets(line, 128, file) != NULL){
+        if (strncmp(line, "VmRSS:", 6) == 0){
+            result = parseLine(line);
+            printf("%s", line);
+            break;
+        }
+    }
+    fclose(file);
+    return result;
 }

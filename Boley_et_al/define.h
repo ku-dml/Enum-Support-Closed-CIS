@@ -25,8 +25,8 @@
 #define Smaller -1
 #define Equiv 0
 #define Larger 1
-#define ITEM_SIZE 101
-#define VERTEX_SIZE 30000
+#define ITEM_SIZE 500 //101
+#define VERTEX_SIZE 100001
 
 #define BIT_LENGTH (sizeof(BitString)*8)
 
@@ -112,6 +112,7 @@ struct _BFSTool{
 #define INI_tlim -1.0
 #define INI_reduce true
 #define INI_outname "out.txt"
+#define INI_common_outname "results.csv"
 #define INI_distname "dist.txt"
 #define INI_ramub -1
 
@@ -132,6 +133,7 @@ struct _Param{
   char *vtable;
   char *itable;
   char *outname;
+  char *common_outname;
   char *distname;
   int ramub;   // upper bound on RAM
 };
