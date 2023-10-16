@@ -181,12 +181,17 @@ int main(int argc, char *argv[]) {
     printf("reduced_edges:\t%d\n", T->reduced_edges);
   }
 
+
   writeSignificantsToFile(std::string(P->outname), container);
 
   std::ofstream common_file;
   common_file.open(std::string(P->common_outname), std::ios::app);
   common_file << G->n << "," << k_p << "," << numCandidates << ",";
-  common_file << numSignificant << "," << elapsed_seconds.count() << std::endl;;
+  common_file << numSignificant << "," << elapsed_seconds.count();
+  #if defined(__linux__)
+    common_file << "," << getVirtualMem() << "," << getPhysicalMem();
+  #endif
+  common_file << std::endl;;
   common_file.close();
 
   /*** postprocess ***/
