@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cd BacterialGWASExp
-make
+./exp.sh
 cd ..
