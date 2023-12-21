@@ -18,7 +18,7 @@ function run () {
     for ((t = 0; t < $TIMES; t++ )); do
         echo exp $t:
         convert $t
-        ./target/BoleyEtAl './data/data.ptn' './data/data.grh' "./data/tmp$t.id_phenotype" "./data/tmp$t.id_population" 1 $a -outname "results/ebg-$n-$p-$a-$g-$t.csv" -common-outname "results/results.csv"
+        ./target/BoleyEtAl './data/data.ptn' './data/data.grh' "./data/tmp$t.id_phenotype" "./data/tmp$t.id_population" 1 $a -outname "results/ebg-$n-$p-$a-$g-$t.csv"
         echo
     done
 
