@@ -1,4 +1,4 @@
-# Enum-bacterial-GWAS
+# Enum-Support-Closed-CIS
 A fast algorithm for enumerating statistically significant support-closed subgraphs
 
 ## Repository hierarchy
