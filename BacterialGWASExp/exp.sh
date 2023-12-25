@@ -9,15 +9,9 @@ a=0
 g=0
 t=0
 
-function convert () {
-    python3 analysis/convert_CALDERAinstance_to_ours/convert_all_rows_to_ptn.py "./data/tmp$1.binary" "./data/data-$n-$p-$a-$g-$1.ptn"
-    python3 analysis/convert_CALDERAinstance_to_ours/convert_dbg.py "./data/tmp$1.edges.dbg" "./data/data-$n-$p-$a-$g-$1.grh"
-}
-
 function run () {
     for ((t = 0; t < $TIMES; t++ )); do
         echo exp $t:
-        convert $t
         ./target/BoleyEtAl "./data/data-$n-$p-$a-$g-$t.ptn" "./data/data-$n-$p-$a-$g-$t.grh" "./data/data-$n-$p-$a-$g-$t.id_phenotype" "./data/data-$n-$p-$a-$g-$t.id_population" 1 $a -outname "results/ebg-$n-$p-$a-$g-$t.csv" -common-outname "results/results.csv"
         echo
     done
@@ -27,7 +21,6 @@ function run () {
 function run_exp() {
     for gtmp in ${gs[@]}; do
         g=$gtmp
-        python3 analysis/exp-caldera/main.py -n $n -p $p -a $a -g $g -t $TIMES
         run
     done
 }
