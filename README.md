@@ -1,6 +1,11 @@
 # Enum-Support-Closed-CIS
 A fast algorithm for enumerating statistically significant support-closed subgraphs
 
+The programs are used in:
+Daiki Watanabe, Takumi Tada, Kazuya Haraguchi: Comparison of Algorithms and Implementations for Enumerating Support-closed Connected Induced Subgraphs. Journal of Information Processing, Vol.32, 2024, pp. 894-902. https://doi.org/10.2197/ipsjjip.32.894
+
+To cite this repository, refer to the above paper. 
+
 ## Repository hierarchy
 
 - RandomExp: enumerating solutions of random graph
